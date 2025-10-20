@@ -2,29 +2,37 @@ import numpy as np
 from scipy.optimize import linprog
 from solve import solve_minimax, solve_minimizer
 import matplotlib.pyplot as plt
+import argparse
 
 def main():
     # ---------- Value Iteration ----------
     gamma = 0.9
     states = [0, 1]             # 0 = Bad channel, 1 = Good channel
     AT, AJ = [0, 1], [0, 1]     # Transmitter: 0=idle,1=transmit; Jammer: 0=idle,1=jam
+    parser = argparse.ArgumentParser(description="Game Theory Project Parameters")
+    parser.add_argument(
+        "--payoffs",
+        type=float,
+        nargs=8,
+        default=[4, -2, 0, 1, -1, 0, 0, 1],
+        metavar=("G_T_NJ", "G_T_J", "G_I_NJ", "G_I_J", "B_T_NJ", "B_T_J", "B_I_NJ", "B_I_J"),
+        help="List of 8 payoffs: [G_T_NJ, G_T_J, G_I_NJ, G_I_J, B_T_NJ, B_T_J, B_I_NJ, B_I_J]"
+    )
 
-    # ---------- Reward Definitions ----------
-    print("Enter rewards for the following scenarios:")
+    args = parser.parse_args()
     r_T = np.zeros((2, 2, 2))
-    scenarios = [
-        ("Good channel, transmit, no jam", 1, 1, 0),
-        ("Good channel, transmit, jammed", 1, 1, 1),
-        ("Bad channel, transmit, no jam", 0, 1, 0),
-        ("Bad channel, transmit, jammed", 0, 1, 1)
-    ]
-    default_rewards = [4, 1, 0, -1]
-    for idx, (desc, s, aT, aJ) in enumerate(scenarios):
-        val = input(f"  Reward for {desc} (default {default_rewards[idx]}): ").strip()
-        r_T[s, aT, aJ] = float(val) if val else default_rewards[idx]
-    # (Idle = 0 by default)
+    # Payoff order: [G_T_NJ, G_T_J, G_I_NJ, G_I_J, B_T_NJ, B_T_J, B_I_NJ, B_I_J]
+    r_T[1, 1, 0] = args.payoffs[0]  # Good, Transmit, No Jam
+    r_T[1, 1, 1] = args.payoffs[1]  # Good, Transmit, Jam
+    r_T[1, 0, 0] = args.payoffs[2]  # Good, Idle, No Jam
+    r_T[1, 0, 1] = args.payoffs[3]  # Good, Idle, Jam
+    r_T[0, 1, 0] = args.payoffs[4]  # Bad, Transmit, No Jam
+    r_T[0, 1, 1] = args.payoffs[5]  # Bad, Transmit, Jam
+    r_T[0, 0, 0] = args.payoffs[6]  # Bad, Idle, No Jam
+    r_T[0, 0, 1] = args.payoffs[7]  # Bad, Idle, Jam
 
     # ---------- Transition Probabilities ----------
+    gamma = 0.9
     good_prob = 0.7
     bad_prob = 0.4
 
