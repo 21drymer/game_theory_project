@@ -20,7 +20,7 @@ def main():
         "--payoffs",
         type=float,
         nargs=8,
-        default=[4, -2, 0, 1, -1, 0, 0, 1],
+        default=[2.5, 0, 0, 0.5, -0.5, 0, 0, 0.5],
         metavar=("G_T_NJ", "G_T_J", "G_I_NJ", "G_I_J", "B_T_NJ", "B_T_J", "B_I_NJ", "B_I_J"),
         help="List of 8 payoffs: [G_T_NJ, G_T_J, G_I_NJ, G_I_J, B_T_NJ, B_T_J, B_I_NJ, B_I_J]"
     )

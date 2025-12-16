@@ -14,7 +14,7 @@ def main():
         "--payoffs",
         type=float,
         nargs=8,
-        default=[4, -2, 0, 1, -1, 0, 0, 1],
+        default=[3.5, 0, 0, 0.5, -0.5, 0, 0, 0.5],
         metavar=("G_T_NJ", "G_T_J", "G_I_NJ", "G_I_J", "B_T_NJ", "B_T_J", "B_I_NJ", "B_I_J"),
         help="List of 8 payoffs: [G_T_NJ, G_T_J, G_I_NJ, G_I_J, B_T_NJ, B_T_J, B_I_NJ, B_I_J]"
     )
@@ -92,21 +92,21 @@ def main():
                     Q[i, j] = r_T[s, aT, aJ] + gamma * np.dot(P[s, aT, aJ], V)
             pT, v1 = solve_minimax(Q)
             pJ, v2 = solve_minimizer(Q)
-            '''
+            
             print(f"\nState {['Bad','Good'][s]}:")
             print("  Transmitter mixed [idle, transmit]:", np.round(pT, 3))
             print("  Jammer mixed [idle, jam]:           ", np.round(pJ, 3))
             print("  Value (transmitter payoff):", round(v1, 3))
             print("  Value (jammer payoff):", -1*round(v1, 3))
-            '''
+            
             payoffs.append(v1)
 
             # Collect payoffs for plotting
     sweep_vals = np.linspace(0.1, 0.9, 9)
     # Plot results
     plt.figure()
-    plt.plot(sweep_vals, payoffs[::2], marker='o', label='Transmitter Payoff (Bad Channel)')
-    plt.plot(sweep_vals, payoffs[1::2], marker='s', label='Transmitter Payoff (Good Channel)')
+    plt.plot(sweep_vals, payoffs[::2], marker='o', label='Transmitter Payoff (Start in Bad Channel)')
+    plt.plot(sweep_vals, payoffs[1::2], marker='s', label='Transmitter Payoff (Start in Good Channel)')
     plt.xlabel(sweep_param)
     plt.ylabel("Payoffs")
     plt.title(f"Payoffs vs {sweep_param}")
